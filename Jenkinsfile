@@ -1,0 +1,1 @@
+buildNixDockerComposeProject("elk")
