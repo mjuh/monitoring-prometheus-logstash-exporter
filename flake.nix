@@ -2,26 +2,22 @@
   description = "logstash prometheus exporter";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
     majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
-    prometheus-logstash-exporter.url =
-      "git+https://gitlab.intr/monitoring/prometheus-logstash-exporter";
   };
 
   outputs = { self, nixpkgs, majordomo, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      inherit (pkgs) callPackage;
+      inherit (pkgs) callPackage mkShell nixFlakes;
     in {
-      devShell.${system} = with pkgs;
-        mkShell {
-          buildInputs = [ nixFlakes  ];
-          shellHook = ''
-            . ${nixFlakes}/share/bash-completion/completions/nix
-            export LANG=C
-          '';
-        };
+      devShell.${system} = mkShell {
+        buildInputs = [ nixFlakes ];
+        shellHook = ''
+          . ${nixFlakes}/share/bash-completion/completions/nix
+          export LANG=C
+        '';
+      };
 
       packages.${system} = rec {
         default = callPackage
@@ -82,10 +78,10 @@
             inherit (majordomo.packages.${system}) nss-certs;
             prometheus-logstash-exporter = default;
           };
-      };
 
-      deploy = majordomo.outputs.deploy {
-        tag = "monitoring/prometheus-logstash-exporter";
+        deploy = majordomo.outputs.deploy {
+          tag = "monitoring/prometheus-logstash-exporter";
+        };
       };
 
       apps.${system} = {

@@ -163,44 +163,11 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1658342534,
-        "narHash": "sha256-4uJmhOnJleJGCjkLOEWKqOKlKISn1wGedNAihYezV5w=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "501bbad4ce34c9d81d6d2b75e7e7126a9db3907c",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
-    "prometheus-logstash-exporter": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "lastModified": 1658424763,
-        "narHash": "sha256-wUg2LE1N/ne9yryMk0DX5E2K0eeVtUgNH2C+/10C+jg=",
-        "ref": "master",
-        "rev": "9f706321332fae0285e1af78f46a7671cd1b6486",
-        "revCount": 43,
-        "type": "git",
-        "url": "https://gitlab.intr/monitoring/prometheus-logstash-exporter"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://gitlab.intr/monitoring/prometheus-logstash-exporter"
-      }
-    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
         "majordomo": "majordomo",
-        "nixpkgs": "nixpkgs_2",
-        "prometheus-logstash-exporter": "prometheus-logstash-exporter"
+        "nixpkgs": "nixpkgs_2"
       }
     },
     "shared-http-errors": {
