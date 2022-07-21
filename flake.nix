@@ -1,12 +1,28 @@
 {
   description = "logstash prometheus exporter";
 
-  outputs = { self, nixpkgs, ... }:
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
+    prometheus-logstash-exporter.url =
+      "git+https://gitlab.intr/monitoring/prometheus-logstash-exporter";
+  };
+
+  outputs = { self, nixpkgs, majordomo, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       inherit (pkgs) callPackage;
     in {
+      devShell.${system} = with pkgs;
+        mkShell {
+          buildInputs = [ nixFlakes  ];
+          shellHook = ''
+            . ${nixFlakes}/share/bash-completion/completions/nix
+            export LANG=C
+          '';
+        };
+
       packages.${system} = rec {
         default = callPackage
           ({ lib, go, buildGoModule }:
@@ -43,7 +59,8 @@
           ({ dockerTools
            , locale
            , tzdata
-           , prometheus-logstash-exporter }:
+           , prometheus-logstash-exporter
+           , nss-certs }:
              dockerTools.buildLayeredImage {
                name = "docker-registry.intr/monitoring/prometheus-logstash-exporter";
                tag = "master";
@@ -51,6 +68,7 @@
                  locale
                  tzdata
                  prometheus-logstash-exporter
+                 nss-certs
                ];
                config = {
                  Env = [
@@ -61,8 +79,13 @@
                };
              })
           {
+            inherit (majordomo.packages.${system}) nss-certs;
             prometheus-logstash-exporter = default;
           };
+      };
+
+      deploy = majordomo.outputs.deploy {
+        tag = "monitoring/prometheus-logstash-exporter";
       };
 
       apps.${system} = {
