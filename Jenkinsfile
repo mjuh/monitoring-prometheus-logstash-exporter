@@ -1,1 +1,1 @@
-buildNixDockerComposeProject("elk")
+buildNixDockerComposeProject("logstash")
